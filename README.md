@@ -1,2 +1,2 @@
-# voice-assistant-client
+# vassapi
 Voice Assistant Python client
