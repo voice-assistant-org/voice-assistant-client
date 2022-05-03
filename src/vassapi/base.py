@@ -5,6 +5,7 @@ from typing import Any, Optional
 import httpx
 
 from .const import DEFAULT_PORT
+from .exceptions import handle_error
 
 
 class BaseClient:
@@ -23,22 +24,26 @@ class BaseClient:
 
     def request(self, method: str, endpoint: str, **kwargs: Any) -> httpx.Response:
         """Send synchronous request."""
-        return httpx.request(
+        response = httpx.request(
             method=method,
             url=f"{self._url}{endpoint}",
             headers=self._headers,
             **kwargs,
         )
+        handle_error(response)
+        return response
 
     async def async_request(self, method: str, endpoint: str, **kwargs: Any) -> httpx.Response:
         """Send asynchronous request."""
         async with httpx.AsyncClient() as client:
-            return await client.request(
+            response = await client.request(
                 method=method,
                 url=f"{self._url}{endpoint}",
                 headers=self._headers,
                 **kwargs,
             )
+            handle_error(response)
+            return response
 
     def get(self, endpoint: str, **kwargs: Any) -> httpx.Response:
         """Send synchronous GET request."""
