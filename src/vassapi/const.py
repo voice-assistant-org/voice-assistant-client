@@ -2,6 +2,7 @@
 
 DEFAULT_PORT = 1507
 STATUS_ACTIVE = "active"
+TIMEOUT = 1
 
 
 class Endpoint:
