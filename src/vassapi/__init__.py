@@ -7,6 +7,7 @@ import httpx
 
 from .base import BaseClient
 from .const import STATUS_ACTIVE, TIMEOUT, Endpoint
+from .exceptions import ClientError, HTTPError, ServerError
 from .models import DeviceInfo, States
 
 
@@ -154,4 +155,4 @@ class Client(ExtendedClient, AsyncExtendedClient):
     """Voice Assistant client."""
 
 
-__all__ = ["Client", "DeviceInfo", "States"]
+__all__ = ["Client", "DeviceInfo", "States", "HTTPError", "ClientError", "ServerError"]

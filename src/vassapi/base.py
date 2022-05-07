@@ -5,7 +5,7 @@ from typing import Any, Optional
 import httpx
 
 from .const import DEFAULT_PORT
-from .exceptions import handle_error
+from .exceptions import HTTPError, handle_error
 
 
 class BaseClient:
@@ -24,19 +24,8 @@ class BaseClient:
 
     def request(self, method: str, endpoint: str, **kwargs: Any) -> httpx.Response:
         """Send synchronous request."""
-        response = httpx.request(
-            method=method,
-            url=f"{self._url}{endpoint}",
-            headers=self._headers,
-            **kwargs,
-        )
-        handle_error(response)
-        return response
-
-    async def async_request(self, method: str, endpoint: str, **kwargs: Any) -> httpx.Response:
-        """Send asynchronous request."""
-        async with httpx.AsyncClient() as client:
-            response = await client.request(
+        try:
+            response = httpx.request(
                 method=method,
                 url=f"{self._url}{endpoint}",
                 headers=self._headers,
@@ -44,6 +33,23 @@ class BaseClient:
             )
             handle_error(response)
             return response
+        except httpx.HTTPError as e:
+            raise HTTPError(e)
+
+    async def async_request(self, method: str, endpoint: str, **kwargs: Any) -> httpx.Response:
+        """Send asynchronous request."""
+        async with httpx.AsyncClient() as client:
+            try:
+                response = await client.request(
+                    method=method,
+                    url=f"{self._url}{endpoint}",
+                    headers=self._headers,
+                    **kwargs,
+                )
+                handle_error(response)
+                return response
+            except httpx.HTTPError as e:
+                raise HTTPError(e)
 
     def get(self, endpoint: str, **kwargs: Any) -> httpx.Response:
         """Send synchronous GET request."""

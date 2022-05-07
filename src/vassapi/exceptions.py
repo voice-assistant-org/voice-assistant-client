@@ -3,15 +3,15 @@
 import httpx
 
 
-class HttpError(Exception):
+class HTTPError(Exception):
     """Base HTTP error."""
 
 
-class ClientError(HttpError):
+class ClientError(HTTPError):
     """4xx - Client error."""
 
 
-class ServerError(HttpError):
+class ServerError(HTTPError):
     """5xx - Server error."""
 
 
